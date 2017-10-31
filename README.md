@@ -1,7 +1,7 @@
 # calc
 Command-line mathematical expression and equation evaluator
 
-## How to use
+## Usage
 To run either supply an expression or equation as a command line parameter
 ```
 ./calc "4/3 * pi * 7.5^3"
