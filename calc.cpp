@@ -81,7 +81,7 @@ double GetLastResult(double* args)
 		return lastResult;
 	}
 	else
-		throw "previous result could not be loaded";
+		throw string("previous result could not be loaded");
 }
 
 void SetLastResult(double result)
@@ -96,7 +96,7 @@ void SetLastResult(double result)
 		file.close();
 	}
 	else
-		throw "could not save result";
+		throw string("could not save result");
 }
 
 void InitOperators()
@@ -178,7 +178,7 @@ void Tokenise(string expression, vector<string> &tokens)
 		else
 		{
 			// Unknown character
-			throw "invalid character '" + expression.substr(1) + "'";
+			throw "invalid character '" + expression.substr(0, 1) + "'";
 		}
 	}
 	
@@ -244,7 +244,7 @@ void ConvertToRPN(vector<string> &infix, vector<string> &rpn)
 					opStack.pop();
 
 					if (opStack.size() == 0)
-						throw "bracket mismatch";
+						throw string("bracket mismatch");
 				}
 				opStack.pop();
 			}
@@ -269,7 +269,7 @@ void ConvertToRPN(vector<string> &infix, vector<string> &rpn)
 	while (opStack.size() != 0)
 	{
 		if (opStack.top()->value == "(")
-			throw "bracket mismatch";
+			throw string("bracket mismatch");
 
 		rpn.push_back(opStack.top()->value);
 		opStack.pop();
@@ -296,7 +296,7 @@ double Evaluate(vector<string> &tokens, double x = 0)
 			
 			// Check that there are sufficient operands on the stack
 			if ((int)rpnStack.size() < op->numArgs)
-				throw "failed to evaluate expression";
+				throw string("failed to evaluate expression");
 			
 			// Create args list
 			double args[MAX_ARGS];
@@ -314,7 +314,7 @@ double Evaluate(vector<string> &tokens, double x = 0)
 	
 	// Check only one number is left on the stack
 	if (rpnStack.size() != 1) 
-		throw "failed to evaluate expression";
+		throw string("failed to evaluate expression");
 	
 	return rpnStack.top();
 }
@@ -407,7 +407,7 @@ double Solve(vector<string> lhs, vector<string> rhs, double lowerLimit, double u
 		// Keep track of iteration count, max out at 1000
 		i++;
 		if (i > 1000)
-			throw "failed to solve equation";
+			throw string("failed to solve equation");
 	}
 	
 	return b;
@@ -422,7 +422,7 @@ void ProcessInput(string input) {
 		{
 			// Must not have 'x' variable
 			if (input.find("x") != string::npos)
-			throw "invalid expression";
+			throw string("invalid expression");
 
 			// Break up into tokens
 			vector<string> infix;
@@ -443,7 +443,7 @@ void ProcessInput(string input) {
 		{
 			// Must have 'x' variable
 			if (input.find("=") == string::npos)
-				throw "invalid equation";
+				throw string("invalid equation");
 
 			// Parse range
 			double min = -1000, max = 1000;
@@ -453,7 +453,7 @@ void ProcessInput(string input) {
 				int rangeEnd = input.find("]");
 				int comma = input.find(",");
 				if (rangeStart == string::npos || comma == string::npos)
-					throw "invalid range";
+					throw string("invalid range");
 				
 				string minStr = input.substr(rangeStart + 1, comma - rangeStart - 1);
 				string maxStr = input.substr(comma + 1, rangeEnd - comma - 1);
@@ -487,7 +487,7 @@ void ProcessInput(string input) {
 			cout << "x = " << x << endl;
 		}
 	}
-	catch (const char* errorMsg) 
+	catch (string errorMsg) 
 	{
 		cout << "Error: " << errorMsg << endl;
 	}
