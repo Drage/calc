@@ -445,9 +445,29 @@ void ProcessInput(string input) {
 			if (input.find("=") == string::npos)
 				throw "invalid equation";
 
+			// Parse range
+			double min = -1000, max = 1000;
+			int rangeStart = input.find("[");
+			if (rangeStart != string::npos)
+			{
+				int rangeEnd = input.find("]");
+				int comma = input.find(",");
+				if (rangeStart == string::npos || comma == string::npos)
+					throw "invalid range";
+				
+				string minStr = input.substr(rangeStart + 1, comma - rangeStart - 1);
+				string maxStr = input.substr(comma + 1, rangeEnd - comma - 1);
+	
+				stringstream converter;
+				converter << minStr << " " << maxStr;
+				converter >> min >> max;
+
+				input = input.substr(0, input.length() - rangeStart);
+			}
+
 			// Split string into lhs and rhs of equation
 			string inputL = input.substr(0, equals);
-			string inputR = input.substr(equals + 1, input.length()-equals-1);
+			string inputR = input.substr(equals + 1, input.length() - equals - 1);
 
 			// Break up into tokens
 			vector<string> infixL, infixR;
@@ -460,7 +480,7 @@ void ProcessInput(string input) {
 			ConvertToRPN(infixR, rhs);
 
 			// Solve equation
-			double x = Solve(lhs, rhs, -1000, 1000, 0.00001);
+			double x = Solve(lhs, rhs, min, max, 0.00001);
 
 			// Save and display result
 			SetLastResult(x);
